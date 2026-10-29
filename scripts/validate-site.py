@@ -38,7 +38,7 @@ for name in images + ['assets/campaign-dark.png']:
     if digest in digests:
         raise SystemExit(f'Duplicate image content: {name}')
     digests.add(digest)
-for stylesheet in (root / 'style.css', root / 'cinema.css', root / 'typography.css'):
+for stylesheet in (root / 'style.css', root / 'cinema.css', root / 'typography.css', root / 'intro.css'):
     for name in re.findall(r"url\(['\"]?([^'\")]+)", stylesheet.read_text()):
         if not name.startswith(('data:', 'https:', 'http:')):
             if not (root / name).is_file():

@@ -32,3 +32,5 @@ KENNY10 applies a 10% demo discount. Shipping is RM 15, free when the discounted
 Pushes to `main` run `.github/workflows/deploy-pages.yml`. The workflow validates, uploads all eleven pages and assets, publishes through GitHub Pages and checks the published homepage. Repository Settings → Pages must allow GitHub Actions. The static artifact excludes development scripts, Git metadata and customer input.
 
 The current visual direction uses a dark cinematic editorial theme in `cinema.css`, an independently generated campaign image, automatic floating motion and scroll-driven framing. No 3D model or arbitrary-angle product rotation is claimed. Reduced-motion preferences are respected.
+
+Brand opening: `intro.js` and `intro.css` show a standalone, silent retro KENNY title animation before the store becomes interactive. It plays once per browser tab, lasts about three seconds, has no onscreen buttons, supports Escape, and uses a short static presentation for reduced-motion preferences. It does not change the storefront theme. Session data is used only to avoid replaying it on internal navigation.

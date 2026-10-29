@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "python -m http.server 3000",
-    "check": "node --check app.js && node --check i18n.js && node --check social-links.js && node --check features.js && python scripts/validate-site.py",
+    "check": "node --check app.js && node --check i18n.js && node --check social-links.js && node --check features.js && node --check intro.js && python scripts/validate-site.py",
     "test:browser": "node scripts/browser-smoke.cjs"
   }
 }
