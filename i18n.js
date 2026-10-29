@@ -570,7 +570,13 @@ const KENNY_ZH = {
   "KENNY graphite and ivory running shoe in a sculptural spotlight": "聚光灯下的 KENNY 炭黑米白概念跑鞋",
   "Sculptural cushioning layers": "立体分层缓震设计",
   "A NEW WAVE OF MOVEMENT": "掀起运动新浪潮",
-  "NEXT WAVE.": "下一场浪潮。"
+  "NEXT WAVE.": "下一场浪潮。",
+  "01 / UPPER": "01 / 鞋面设计",
+  "Engineered mesh.": "科技网布。",
+  "02 / FORM": "02 / 立体轮廓",
+  "Sculpted cushioning.": "雕塑感缓震。",
+  "KENNY PERFORMANCE CONCEPT": "KENNY 运动概念设计",
+  "DESIGNED TO MOVE WITH YOU": "为你的每一步而设计"
 };
 let language='en';try{language=localStorage.getItem('kenny-language')==='zh'?'zh':'en'}catch{}
 const languageText=new WeakMap(),languageAttributes=new WeakMap();
