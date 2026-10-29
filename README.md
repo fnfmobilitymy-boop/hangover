@@ -41,4 +41,6 @@ Readable type: navigation, catalogue copy, forms and policy paragraphs use large
 
 Motion: `motion.css` and `motion.js` provide small product float, slow ambient lighting, staged hero copy, staggered catalogue cards and panel transitions. Hero position stays independent of these effects. Motion begins after the intro, pauses offscreen/in hidden tabs, and follows the system reduced-motion preference.
 
-Airflow lighting: mouse hover, taps, finger movement and native page scrolling create curved fluorescent wisps on a pointer-transparent canvas. Trails fade in about one second; form fields and the brand opening do not trigger them. The effect uses passive listeners, stops when idle, and is disabled for reduced motion.
+Airflow lighting (`airflow.js`): mouse hover, taps, finger movement and native page scrolling create curved fluorescent wisps on a pointer-transparent canvas. Trails fade in about one second; form fields and the brand opening do not trigger them. The effect uses passive listeners, stops when idle, and is disabled for reduced motion.
+
+Airflow assets use an explicit URL version so browsers request the movement-driven implementation instead of an older click-ray file. Mouse hover uses `mousemove` independently of button state, and wheel plus capture-phase nested-scroll listeners also emit trails.
