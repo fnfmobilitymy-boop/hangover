@@ -41,4 +41,4 @@ Readable type: navigation, catalogue copy, forms and policy paragraphs use large
 
 Motion: `motion.css` and `motion.js` provide small product float, slow ambient lighting, staged hero copy, staggered catalogue cards and panel transitions. Hero position stays independent of these effects. Motion begins after the intro, pauses offscreen/in hidden tabs, and follows the system reduced-motion preference.
 
-Touch lighting: taps and finger movement create short, subtle light rays on a pointer-transparent canvas. Trails fade within a second; form fields and the brand opening do not trigger them. The effect uses passive listeners, stops when idle, and is disabled for reduced motion.
+Airflow lighting: mouse hover, taps and finger movement create curved fluorescent wisps on a pointer-transparent canvas. Trails fade in about one second; form fields and the brand opening do not trigger them. The effect uses passive listeners, stops when idle, and is disabled for reduced motion.
