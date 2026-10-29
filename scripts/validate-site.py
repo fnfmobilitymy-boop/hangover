@@ -44,3 +44,11 @@ for stylesheet in (root / 'style.css', root / 'cinema.css', root / 'typography.c
             if not (root / name).is_file():
                 raise SystemExit(f'Missing stylesheet asset: {name}')
 print('KENNY eleven pages, static assets and distinct images verified')
+
+# Every translated source phrase must be present in both non-English dictionaries.
+import json
+zh = json.loads((root / "translations.json").read_text())
+ms = json.loads((root / "translations-ms.json").read_text())
+if set(zh) != set(ms) or not all(isinstance(v, str) and v.strip() for v in ms.values()):
+    raise SystemExit("Chinese and Malay translation coverage differs")
+print(f"Three-language dictionaries verified: {len(zh)} phrases per translated language")

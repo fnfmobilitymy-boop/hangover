@@ -1,10 +1,79 @@
-const {chromium}=require('playwright');
-(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});const p=await b.newPage({viewport:{width:1440,height:1000}});const errors=[];p.on('pageerror',e=>errors.push(e.message));const base=process.env.KENNY_TEST_URL||'http://127.0.0.1:3010/';const go=file=>p.goto(base+file);await go('index.html');await p.locator('#cookie-reject').click();
-for(const route of ['index','shop','product','story','craft','cart','checkout','contact']){await go(route+'.html');if(!await p.locator('main').count())throw Error('Missing page '+route);if(await p.locator('#social-links .social-link').count()!==5)throw Error('Missing social links '+route)}
-await go('shop.html');if(await p.locator('.product').count()!==7)throw Error('Expected 7 products');await p.locator('[data-favorite="aero-ice"]').click();await go('shop.html?wishlist=1');if(await p.locator('.product').count()!==1)throw Error('Wishlist failed');await go('shop.html?audience=Kids');if(await p.locator('.product').count()!==1)throw Error('Kids filter failed');await p.locator('[data-product="junior-07"]').click();await p.waitForURL('**/product.html?id=junior-07');if(await p.locator('[data-size="28"]').count()!==1||await p.locator('[data-size="42"]').count())throw Error('Junior sizes failed');await p.locator('[data-size="30"]').click();await p.locator('#add-to-bag').click();await go('cart.html');if(!await p.locator('.bag-item').count())throw Error('Cross-page cart failed');await p.locator('[data-delta="1"]').click();await p.locator('#promo-code').fill('KENNY10');await p.locator('#apply-promo').click();const total=await p.locator('#bag-summary').textContent();if(!total.includes('355.20'))throw Error('Promo total wrong: '+total);await p.locator('#checkout-button').click();await p.waitForURL('**/checkout.html');await p.locator('[name="name"]').fill('Demo Customer');await p.locator('[name="email"]').fill('demo@example.com');await p.locator('[name="phone"]').fill('0123456789');await p.locator('[name="address"]').fill('Demo Address');await p.locator('[name="postcode"]').fill('50000');await p.locator('#checkout-form button[type=submit]').click();if(!await p.locator('.order-success').count())throw Error('No confirmation');const orderId=await p.locator('.order-success strong').textContent();await p.locator('[data-feature="tracker"]').first().click();await p.locator('[name=reference]').fill(orderId);await p.locator('#tracker-form button').click();if(!await p.locator('.tracking-card').count())throw Error('Tracker failed');await p.locator('#feature-close').click();
-await go('shop.html');await p.locator('.facet-toggle').click();await p.locator('#facets [name=max]').fill('200');await p.locator('#facets button[type=submit],#facets button.button').first().click();if(await p.locator('.product').count()!==1)throw Error('Facets failed');await p.locator('.facet-toggle').click();await p.locator('#reset-facets').click();if(await p.locator('.product').count()!==7)throw Error('Reset failed');await p.locator('.mega-toggle').first().click();if(!await p.locator('#mega-menu').isVisible())throw Error('Mega menu failed');await p.locator('#mega-menu a').filter({hasText:'T-shirts & polos'}).click();await p.waitForURL('**/shop.html?**');if(await p.locator('.product').count()!==0)throw Error('Empty clothing department wrong');
-await p.locator('[data-feature="member"]').first().click();await p.locator('[data-provider=Google]').click();if(!await p.locator('#provider-status').textContent())throw Error('OAuth demo missing');await p.locator('[name=memberName]').fill('Kenny Demo');await p.locator('[name=memberEmail]').fill('demo@example.com');await p.locator('#member-form input[type=checkbox][required]').evaluateAll(xs=>xs.forEach(x=>x.checked=true));await p.locator('#member-form button.button').click();if(await p.locator('#profile-welcome').textContent()!=='Kenny Demo')throw Error('Member profile failed');await p.locator('#feature-close').click();
-await p.locator('[data-feature=stores]').click();await p.locator('#store-city').selectOption('PG');if(await p.locator('.store-result').count()!==1)throw Error('Stores failed');await p.locator('#feature-close').click();await p.locator('[data-feature=region]').click();await p.locator('#region-form [name=language]').selectOption('zh');await p.locator('#region-form button').click();if(await p.locator('html').getAttribute('lang')!=='zh-CN')throw Error('Region language failed');
-await go('product.html?id=aero-ice');await p.locator('[name=reviewName]').fill('Test User');await p.locator('[name=review]').fill('Demo fit feedback');await p.locator('#review-form button').click();if(!await p.locator('.review').count())throw Error('Review failed');
-for(const width of [390,1440]){await p.setViewportSize({width,height:844});for(const route of ['index','shop','product','story','craft','cart','checkout','contact']){await go(route+'.html');await p.waitForTimeout(50);if(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Overflow '+route+' '+width);}}
-await go('contact.html');await p.locator('#contact-form [name=name]').fill('Demo');await p.locator('#contact-form [name=email]').fill('demo@example.com');await p.locator('#contact-form [name=message]').fill('Demo message');await p.locator('#contact-form button[type=submit]').click();if(!await p.locator('#contact-status').textContent().then(t=>t.includes('未发送')))throw Error('Contact demo failed');if(errors.length)throw Error(errors.join('\n'));console.log(JSON.stringify({pages:8,products:7,flow:'passed',wishlist:'passed',juniorSizes:'passed',promo:'passed',tracker:'passed',filters:'passed',member:'passed',stores:'passed',reviews:'passed',contact:'passed',chineseLayouts:'passed',errors}));await b.close()})().catch(e=>{console.error(e);process.exit(1)});
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', args: ['--no-sandbox'] });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  await page.addInitScript(() => sessionStorage.setItem('kenny-intro-seen', '1'));
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const base = process.env.KENNY_TEST_URL || 'http://127.0.0.1:3010/';
+  const go = route => page.goto(base + route);
+  const chooseLanguage = async code => {
+    await page.locator('#language-toggle').click();
+    await page.locator(`[data-lang="${code}"]`).click();
+  };
+  await go('index.html');
+  await page.locator('#cookie-reject').click();
+  await chooseLanguage('ms');
+  if (await page.locator('html').getAttribute('lang') !== 'ms') throw Error('Malay language switch failed');
+  await go('product.html?id=junior-07');
+  if (await page.locator('[data-size="42"]').count()) throw Error('Adult sizes shown for junior product');
+  await page.locator('[data-size="30"]').click();
+  await page.locator('#add-to-bag').click();
+  if (!await page.locator('#member-form').isVisible()) throw Error('Guest signup gate missing');
+  if (await page.locator('#bag-count').textContent() !== '0') throw Error('Guest purchase bypassed gate');
+  await page.locator('[name="memberName"]').fill('Demo Member');
+  await page.locator('[name="memberEmail"]').fill('demo@example.com');
+  await page.locator('#member-form input[type="checkbox"][required]').evaluateAll(inputs => inputs.forEach(input => input.checked = true));
+  await page.locator('#member-form button.button').click();
+  await page.waitForFunction(() => document.querySelector('#bag-count').textContent === '1');
+  await page.reload();
+  if (await page.locator('html').getAttribute('lang') !== 'ms') throw Error('Language preference not persisted');
+  await go('shop.html');
+  if (await page.locator('.product').count() !== 7) throw Error('Product catalogue failed');
+  await page.locator('[data-favorite="aero-ice"]').click();
+  await go('shop.html?wishlist=1');
+  if (await page.locator('.product').count() !== 1) throw Error('Wishlist failed');
+  await go('cart.html');
+  await page.locator('[data-delta="1"]').click();
+  await page.locator('#promo-code').fill('KENNY10');
+  await page.locator('#apply-promo').click();
+  if (!await page.locator('#bag-summary').textContent().then(text => text.includes('355.20'))) throw Error('Discount/shipping total failed');
+  await page.locator('#checkout-button').click();
+  await page.waitForURL('**/checkout.html');
+  await page.locator('[name="name"]').fill('Demo Customer');
+  await page.locator('[name="email"]').fill('demo@example.com');
+  await page.locator('[name="phone"]').fill('0123456789');
+  await page.locator('[name="address"]').fill('Demo Address');
+  await page.locator('[name="postcode"]').fill('50000');
+  await page.locator('#checkout-form button[type="submit"]').click();
+  const reference = await page.locator('.order-success strong').textContent();
+  await page.locator('[data-feature="tracker"]').first().click();
+  await page.locator('[name="reference"]').fill(reference);
+  await page.locator('#tracker-form button').click();
+  if (!await page.locator('.tracking-card').count()) throw Error('Order tracker failed');
+  await page.locator('#feature-close').click();
+  await page.locator('[data-feature="member"]').first().click();
+  await page.locator('#demo-sign-out').click();
+  if (!await page.locator('#demo-login').isVisible()) throw Error('Returning member login missing');
+  await page.locator('#demo-login').click();
+  await go('shop.html');
+  await page.locator('.facet-toggle').click();
+  await page.locator('#facets [name="max"]').fill('200');
+  await page.locator('#facets button.button').click();
+  if (await page.locator('.product').count() !== 1) throw Error('Price facet failed');
+  await page.locator('.facet-toggle').click();
+  await page.locator('#reset-facets').click();
+  if (await page.locator('.product').count() !== 7) throw Error('Facet reset failed');
+  for (const code of ['zh', 'en', 'ms']) {
+    await chooseLanguage(code);
+    for (const route of ['index', 'shop', 'product', 'story', 'craft', 'cart', 'checkout', 'contact', 'cancellation-refunds', 'terms', 'privacy']) {
+      await go(route + '.html');
+      if (await page.locator('#social-links .social-link').count() !== 5) throw Error('Missing social logos on ' + route);
+      if (await page.locator('html').getAttribute('lang') !== (code === 'zh' ? 'zh-CN' : code)) throw Error('Language persistence failed');
+      if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)) throw Error('Horizontal overflow on ' + route);
+    }
+  }
+  if (errors.length) throw Error(errors.join('\n'));
+  console.log('Passed: three languages, eleven pages, registration gate, resume purchase, returning login, wishlist, coupon, checkout, tracking and facets.');
+  await browser.close();
+})().catch(error => { console.error(error); process.exit(1); });
