@@ -44,3 +44,5 @@ Motion: `motion.css` and `motion.js` provide small product float, slow ambient l
 Airflow lighting (`airflow.js`): mouse hover, taps, finger movement and native page scrolling create curved fluorescent wisps on a pointer-transparent canvas. Trails fade in about one second; form fields and the brand opening do not trigger them. The effect uses passive listeners, stops when idle, and is disabled for reduced motion.
 
 Airflow assets use an explicit URL version so browsers request the movement-driven implementation instead of an older click-ray file. Mouse hover uses `mousemove` independently of button state, and wheel plus capture-phase nested-scroll listeners also emit trails.
+
+Airflow performance: trails use 1px cores with a 2.5–5px soft halo, at most 16 live segments and a 460ms lifetime. Gradients are cached per segment; full-screen blending, shadow blur and radial glow passes are removed. The canvas uses a 1x backing buffer rather than high-DPI scaling.

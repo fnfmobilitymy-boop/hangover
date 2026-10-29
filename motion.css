@@ -19,3 +19,4 @@ dialog[open]{animation:kenny-panel-enter .25s cubic-bezier(.2,.8,.2,1)}dialog[op
 }
 @media(prefers-reduced-motion:reduce){.cinema-object img{animation:none!important;will-change:auto}.cinema-light:before{display:none}.product,.cinema-title>*,dialog[open],#language-menu,.mega-columns{animation:none!important}.button:active,.button:hover{transform:none}}
 #airflow-overlay{position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none;user-select:none;mix-blend-mode:screen}@media(prefers-reduced-motion:reduce){#airflow-overlay{display:none}}
+#airflow-overlay{mix-blend-mode:normal}
