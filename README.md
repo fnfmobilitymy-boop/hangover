@@ -38,3 +38,7 @@ Brand opening: `intro.js` and `intro.css` show a standalone, silent retro KENNY 
 Membership gating: `auth-demo.js` requires a local demo member session before adding to the bag and before checkout. It opens registration automatically, resumes the pending action after registration, and offers one-click local demo login for a returning profile. Sessions last for the current tab; the voluntary demo profile can remain in this browser. This is not secure authentication, does not verify email or identity and is not suitable as a real account or payment gate. A production identity provider is still required for real or cross-device accounts.
 
 Readable type: navigation, catalogue copy, forms and policy paragraphs use larger font sizes, with responsive handling for longer Malay text.
+
+Motion: `motion.css` and `motion.js` provide small product float, slow ambient lighting, staged hero copy, staggered catalogue cards and panel transitions. Hero position stays independent of these effects. Motion begins after the intro, pauses offscreen/in hidden tabs, and follows the system reduced-motion preference.
+
+Touch lighting: taps and finger movement create short, subtle light rays on a pointer-transparent canvas. Trails fade within a second; form fields and the brand opening do not trigger them. The effect uses passive listeners, stops when idle, and is disabled for reduced motion.

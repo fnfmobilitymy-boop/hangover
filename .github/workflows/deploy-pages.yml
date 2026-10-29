@@ -33,9 +33,10 @@ jobs:
           node --check features.js
           node --check intro.js
           node --check auth-demo.js
+          node --check motion.js
           python3 scripts/validate-site.py
           mkdir -p "$RUNNER_TEMP/kenny-site"
-          cp *.html style.css cinema.css typography.css intro.css intro.js auth-demo.js app.js i18n.js social-links.js features.js "$RUNNER_TEMP/kenny-site/"
+          cp *.html style.css cinema.css typography.css intro.css motion.css motion.js intro.js auth-demo.js app.js i18n.js social-links.js features.js "$RUNNER_TEMP/kenny-site/"
           cp -R assets "$RUNNER_TEMP/kenny-site/assets"
           chmod -R a+rX "$RUNNER_TEMP/kenny-site"
           touch "$RUNNER_TEMP/kenny-site/.nojekyll"
