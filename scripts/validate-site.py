@@ -2,6 +2,7 @@
 from hashlib import sha256
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 import re
 
 root = Path(__file__).resolve().parents[1]
@@ -14,18 +15,22 @@ class Assets(HTMLParser):
                 continue
             if value.startswith(('#', 'https:', 'http:', 'mailto:')):
                 continue
-            path = root / value
+            path = root / urlsplit(value).path
             if not path.is_file() or not path.stat().st_size:
                 raise SystemExit(f'Missing or empty asset: {value}')
 
 
-Assets().feed((root / 'index.html').read_text())
+pages = sorted(root.glob('*.html'))
+if len(pages) != 11:
+    raise SystemExit('Expected eight store pages and three policy pages')
+for page in pages:
+    Assets().feed(page.read_text())
 app = (root / 'app.js').read_text()
 images = re.findall(r"image:'([^']+)'", app)
-if len(images) != 6 or len(set(images)) != 6:
-    raise SystemExit('Expected six independent product images')
+if len(images) != len(set(images)) or len(images) < 6:
+    raise SystemExit('Expected distinct product images')
 digests = set()
-for name in images + ['assets/hero-shoe.png']:
+for name in images + ['assets/campaign-dark.png']:
     path = root / name
     if not path.is_file() or not path.stat().st_size:
         raise SystemExit(f'Missing product image: {name}')
@@ -33,9 +38,9 @@ for name in images + ['assets/hero-shoe.png']:
     if digest in digests:
         raise SystemExit(f'Duplicate image content: {name}')
     digests.add(digest)
-for stylesheet in (root / 'style.css',):
+for stylesheet in (root / 'style.css', root / 'cinema.css', root / 'typography.css'):
     for name in re.findall(r"url\(['\"]?([^'\")]+)", stylesheet.read_text()):
         if not name.startswith(('data:', 'https:', 'http:')):
             if not (root / name).is_file():
                 raise SystemExit(f'Missing stylesheet asset: {name}')
-print('KENNY static assets and seven distinct images verified')
+print('KENNY eleven pages, static assets and distinct images verified')

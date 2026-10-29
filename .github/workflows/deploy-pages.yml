@@ -30,9 +30,10 @@ jobs:
           node --check app.js
           node --check i18n.js
           node --check social-links.js
+          node --check features.js
           python3 scripts/validate-site.py
           mkdir -p "$RUNNER_TEMP/kenny-site"
-          cp index.html style.css app.js i18n.js social-links.js "$RUNNER_TEMP/kenny-site/"
+          cp *.html style.css cinema.css typography.css app.js i18n.js social-links.js features.js "$RUNNER_TEMP/kenny-site/"
           cp -R assets "$RUNNER_TEMP/kenny-site/assets"
           chmod -R a+rX "$RUNNER_TEMP/kenny-site"
           touch "$RUNNER_TEMP/kenny-site/.nojekyll"
@@ -58,7 +59,7 @@ jobs:
           import sys
           from pathlib import Path
           html = Path(sys.argv[1]).read_text()
-          for expected in ('KENNY', 'i18n.js', 'social-links.js', 'product-modal'):
+          for expected in ('KENNY', 'i18n.js', 'social-links.js', 'data-page="index"'):
               if expected not in html:
                   raise SystemExit(f'Published website is missing {expected}')
           print('Published KENNY demo verified')
