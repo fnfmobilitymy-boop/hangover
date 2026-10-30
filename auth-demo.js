@@ -1,5 +1,7 @@
 // Frontend membership flow only. No identity verification or real account service.
-(()=>{
+(async()=>{
+ await window.kennyBackendReady;
+ if(window.kennyBackend?.available){window.kennyInstallServerAuth();return}
  let pendingPurchase=null;
  function profile(){const saved=demoStorage.read('kenny-demo-profile',null);return saved&&typeof saved.name==='string'&&typeof saved.email==='string'?saved:null}
  function signedIn(){try{return !!profile()&&sessionStorage.getItem('kenny-demo-session')==='active'}catch{return false}}

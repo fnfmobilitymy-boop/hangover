@@ -1,6 +1,10 @@
 # KENNY — multi-page concept store
 
-Static trilingual footwear storefront (Chinese, Bahasa Melayu and English), with flag-labelled language choices. Start with `npm start` (port 3000). No build or dependency installation is needed to serve the website.
+Trilingual footwear storefront (Chinese, Bahasa Melayu and English) with a persistent FastAPI/SQLite commerce backend and a separate lavender administration dashboard.
+
+Install Python dependencies with `python -m pip install -r requirements.lock`, then run `npm start` (port 3000). Open `/admin/` to initialize your private administrator account. Full setup, Docker deployment, backups and production limitations: [backend/README.md](backend/README.md).
+
+The descriptions below cover the standalone static demo, served with `npm run start:static`. When served by the backend, customer accounts, products, stock, coupons, orders, reviews, subscriptions, stores and support messages use the server database. Prices and stock are checked on the server. Payment collection and refunds require external manual processing; no payment gateway or email service is connected. GitHub Pages hosts only the static demo and cannot run the backend.
 
 ## Eight store pages
 
