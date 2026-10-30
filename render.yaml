@@ -1,0 +1,29 @@
+# Persistent disks require a paid Render plan. Review pricing before creation.
+services:
+  - type: web
+    name: kenny-commerce
+    runtime: python
+    plan: starter
+    region: singapore
+    branch: main
+    autoDeployTrigger: "off"
+    buildCommand: python -m pip install -r requirements.lock
+    startCommand: python -m backend.server
+    healthCheckPath: /api/health
+    disk:
+      name: kenny-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.12
+      - key: KENNY_ENV
+        value: production
+      - key: KENNY_COOKIE_SECURE
+        value: "1"
+      - key: KENNY_HOST
+        value: 0.0.0.0
+      - key: KENNY_DATA_DIR
+        value: /var/data/kenny
+      - key: KENNY_BOOTSTRAP_TOKEN
+        generateValue: true

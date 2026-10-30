@@ -1,5 +1,7 @@
 # KENNY commerce backend
 
+For GitHub Actions deployment to a persistent Render service, follow [DEPLOYMENT.md](DEPLOYMENT.md).
+
 FastAPI + SQLite, serving the storefront and a light lavender administration UI from the same origin. The application needs a persistent, writable filesystem and one running instance. GitHub Pages cannot execute it.
 
 ## Local startup

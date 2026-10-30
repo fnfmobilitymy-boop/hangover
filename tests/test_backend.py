@@ -175,6 +175,18 @@ class CommerceTests(unittest.TestCase):
         settings['stores'][0]['map_url'] = 'javascript:alert(1)'
         self.assertEqual(self.post(self.admin, '/api/admin/settings', settings, 'put').status_code, 422)
 
+    def test_render_public_origin_csrf_behind_tls_proxy(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory, patch.dict('os.environ', {'RENDER_EXTERNAL_URL':'https://kenny-fixture.onrender.com'}):
+            app = create_app(directory, secure_cookie=False)
+            with TestClient(app) as client:
+                self.csrf(client)
+                body = {'email':'origin@example.test'}
+                accepted = client.post('/api/newsletter', json=body, headers={'Origin':'https://kenny-fixture.onrender.com', 'Sec-Fetch-Site':'same-origin'})
+                self.assertEqual(accepted.status_code, 200)
+                rejected = client.post('/api/newsletter', json=body, headers={'Origin':'https://evil.example', 'Sec-Fetch-Site':'cross-site'})
+                self.assertEqual(rejected.status_code, 403)
+
     def test_expiry_persistence_customer_block_and_static_boundaries(self):
         before=self.stock();order=self.post(self.customer,'/api/orders',self.order()).json()
         with sqlite3.connect(self.app.state.database) as conn:

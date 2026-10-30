@@ -245,6 +245,10 @@ def create_app(data_dir=None, secure_cookie=None):
     if production and not secure:
         raise RuntimeError('Production requires KENNY_COOKIE_SECURE=1 and an HTTPS reverse proxy')
     allowed_origins = set(filter(None, os.environ.get('KENNY_ALLOWED_ORIGINS', '').split(',')))
+    # Render supplies the exact public HTTPS origin behind its TLS proxy.
+    render_origin = os.environ.get('RENDER_EXTERNAL_URL', '').rstrip('/')
+    if re.fullmatch(r'https://[a-zA-Z0-9.-]+(?::[0-9]+)?', render_origin):
+        allowed_origins.add(render_origin)
     bootstrap_path = directory / 'bootstrap-token'
     if not bootstrap_path.exists():
         fd = os.open(bootstrap_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)

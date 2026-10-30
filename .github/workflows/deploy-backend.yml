@@ -1,0 +1,43 @@
+name: Deploy KENNY backend
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kenny-backend-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Missing hosting configuration does not break the existing Pages demo.
+    if: github.event_name == 'workflow_dispatch' || vars.RENDER_SERVICE_ID != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: backend-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Validate deployment configuration
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+        run: python scripts/deploy-render.py --check
+      - run: python -m pip install -r requirements-dev.txt
+      - name: Test backend and storefront
+        run: |
+          python -m unittest discover -s tests -v
+          npm run check
+      - name: Deploy and verify public backend
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+          KENNY_DEPLOY_COMMIT: ${{ github.sha }}
+        run: python scripts/deploy-render.py

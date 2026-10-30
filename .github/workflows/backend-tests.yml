@@ -9,6 +9,8 @@ on:
       - 'requirements*'
       - 'backend-client.js'
       - 'Dockerfile'
+      - 'render.yaml'
+      - 'scripts/deploy-render.py'
       - '.github/workflows/backend-tests.yml'
   pull_request:
     paths:
@@ -18,6 +20,8 @@ on:
       - 'requirements*'
       - 'backend-client.js'
       - 'Dockerfile'
+      - 'render.yaml'
+      - 'scripts/deploy-render.py'
       - '.github/workflows/backend-tests.yml'
 permissions:
   contents: read

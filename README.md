@@ -1,5 +1,7 @@
 # KENNY — multi-page concept store
 
+Backend deployment with GitHub Actions: [setup instructions](backend/DEPLOYMENT.md). First-time hosting connection is required; Actions prints verified storefront and admin URLs after deployment.
+
 Trilingual footwear storefront (Chinese, Bahasa Melayu and English) with a persistent FastAPI/SQLite commerce backend and a separate lavender administration dashboard.
 
 Install Python dependencies with `python -m pip install -r requirements.lock`, then run `npm start` (port 3000). Open `/admin/` to initialize your private administrator account. Full setup, Docker deployment, backups and production limitations: [backend/README.md](backend/README.md).
