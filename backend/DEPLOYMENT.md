@@ -4,10 +4,12 @@ GitHub Actions runs tests and requests deployments. Render runs the website, API
 
 ## One-time setup
 
+For an already connected Render Blueprint, automatic deployment now waits for GitHub checks to pass (`autoDeployTrigger: checksPass`). With Blueprint Auto Sync enabled, pushes to `main` are published after the checks succeed. No Render API key is required for this path. The API-based Action below remains an optional way to request and verify an explicit deployment. Avoid running both for the same commit.
+
 1. Open [Create KENNY on Render](https://render.com/deploy?repo=https://github.com/fnfmobilitymy-boop/hangover). Sign in, connect this repository, and review the Blueprint. **The Starter web service and 1 GB disk are paid resources. Review Render's current price before confirming.** No hosting resource is created merely by pushing this repository.
 2. After creation, copy the service ID (`srv-…`) from Render. In GitHub repository **Settings → Secrets and variables → Actions → Variables**, create `RENDER_SERVICE_ID`. Use a repository variable so the push trigger can see it.
 3. Create a Render API key in your Render account settings. In GitHub **Actions secrets**, save it as `RENDER_API_KEY`. Do not paste it into chat, source files or logs. It must be available to the `backend-production` GitHub environment. Follow any organization environment approval rules.
-4. Open GitHub **Actions → Deploy KENNY backend → Run workflow**, select `main`, and run it. The job tests the application, deploys that exact commit, waits for Render's live state, checks public health/admin, and prints the verified public URLs in the job summary. Future pushes to `main` deploy automatically once `RENDER_SERVICE_ID` exists. Render's independent automatic deployments are disabled to avoid bypassing these checks.
+4. For the optional API-based route, set Render's Auto-Deploy to **Off** to avoid duplicate deployments. Open GitHub **Actions → Deploy KENNY backend → Run workflow**, select `main`, and run it. The job tests the application, deploys that exact commit, waits for Render's live state, checks public health/admin, and prints the verified public URLs in the job summary. Future pushes to `main` deploy through this Action once `RENDER_SERVICE_ID` exists. To stay on the Blueprint's check-based route, leave `RENDER_SERVICE_ID` unset; GitHub checks and Render handle publishing without this API-based Action.
 
 If GitHub environment protections require a reviewer, approve the `backend-production` deployment in Actions. A missing API key or service ID produces a clear setup error. The workflow cannot create hosting accounts or paid services for you.
 

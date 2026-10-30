@@ -901,7 +901,7 @@ def create_app(data_dir=None, secure_cookie=None):
             return FileResponse(ROOT / 'admin/index.html')
         if path.startswith('admin/'):
             name = path.removeprefix('admin/')
-            if name not in ('app.js', 'style.css'):
+            if name not in ('app.js', 'style.css', 'preferences.js'):
                 raise HTTPException(404)
             return FileResponse(ROOT / 'admin' / name)
         if path.startswith('uploads/'):

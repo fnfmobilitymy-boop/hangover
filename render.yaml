@@ -6,7 +6,7 @@ services:
     plan: starter
     region: singapore
     branch: main
-    autoDeployTrigger: "off"
+    autoDeployTrigger: checksPass
     buildCommand: python -m pip install -r requirements.lock
     startCommand: python -m backend.server
     healthCheckPath: /api/health
